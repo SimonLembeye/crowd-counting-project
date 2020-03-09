@@ -1,4 +1,7 @@
 import torch.nn as nn
+from torchvision import models
+
+from utils.models import make_layers
 
 class CSRNet(nn.Module):
     def __init__(self, load_weights=False):

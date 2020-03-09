@@ -1,4 +1,8 @@
-from models import vgg19
+from models import vgg19, CSRNet
+from loaders import loading_data_GT,  loading_data_Bayes
 
-vgg = vgg19()
-print(vgg)
+csr = CSRNet()
+print(csr)
+
+
+_, _, _ = loading_data_Bayes()
