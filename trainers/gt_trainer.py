@@ -1,15 +1,16 @@
 from torch.autograd import Variable
+import torch
 
 from .abctrainer import abcTrainer
+from losses import GT_aleatoric_loss
 
-LOG_PARA = 100. # C'est quoi ce LOG_PARA ??
+LOG_PARA = 100.
 seed = 1
 
 
 class GTTrainer(abcTrainer):
-    def __init__(self, dataloader, net, loss, optimizer, device, validation_frequency=1, max_epoch=100):
-        super().__init__(dataloader, net, loss, optimizer, device, validation_frequency=validation_frequency, max_epoch=max_epoch)
-
+    def __init__(self, dataloader, net, loss, optimizer, device, validation_frequency=1, max_epoch=100, aleatoric=False):
+        super().__init__(dataloader, net, loss, optimizer, device, validation_frequency=validation_frequency, max_epoch=max_epoch, aleatoric=aleatoric)
 
     def train_epoch(self):
         self.net.train()
@@ -20,8 +21,13 @@ class GTTrainer(abcTrainer):
             img = Variable(img).to(self.device)
             gt_map = Variable(gt_map).to(self.device)
             self.optimizer.zero_grad()
-            pred_density_map = self.net(img)
-            loss = self.loss(pred_density_map, gt_map)
+
+            if self.aleatoric:
+                pred_density_map, logvar = self.net(img, aleatoric=self.aleatoric)
+                loss = GT_aleatoric_loss(self.loss, pred_density_map, gt_map, logvar)
+            else:
+                pred_density_map = self.net(img)
+                loss = self.loss(pred_density_map, gt_map)
             loss.backward()
             self.optimizer.step()
 
@@ -31,7 +37,7 @@ class GTTrainer(abcTrainer):
 
             print(f'epoch: {self.epoch} | step: {step} | count: {gt_count} | prediction: {pre_count} | loss: {loss}')
 
-        writer.add_scalar('train loss GT',
+        self.writer.add_scalar('train loss GT',
             epoch_loss,
             self.epoch)
 
@@ -48,7 +54,11 @@ class GTTrainer(abcTrainer):
                 img = Variable(img).to(self.device)
                 assert img.size(0) == 1
                 gt_map = Variable(gt_map).to(self.device)
-                pred_density_map = self.net(img)
+
+                if self.aleatoric:
+                    pred_density_map, _ = self.net(img, aleatoric=aleatoric)
+                else:
+                    pred_density_map = self.net(img)
 
                 pred_cnt = int(gt_map[0].sum().data / LOG_PARA)
                 gt_count = int(pred_density_map[0].sum().data/LOG_PARA)
@@ -64,10 +74,10 @@ class GTTrainer(abcTrainer):
         print('Epoch {} Val, MSE: {:.2f} MAE: {:.2f}, Cost {:.1f} sec'
                      .format(self.epoch, mse, mae, time.time()-epoch_start))
 
-        writer.add_scalar('val MAE GT',
+        self.writer.add_scalar('val MAE GT',
                     mae,
                     self.epoch)
-        writer.add_scalar('val MSE GT',
+        self.writer.add_scalar('val MSE GT',
                         mse,
                         self.epoch)
 

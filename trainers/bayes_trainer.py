@@ -2,10 +2,11 @@ import numpy as np
 import torch
 
 from .abctrainer import abcTrainer
+from losses import bayes_aleatoric_loss
 
 class BayesTrainer(abcTrainer):
-    def __init__(self, dataloader, net, loss, optimizer, device, post_prob, validation_frequency=1, max_epoch=100):
-        super().__init__(dataloader, net, loss, optimizer, device, validation_frequency=validation_frequency, max_epoch=max_epoch)
+    def __init__(self, dataloader, net, loss, optimizer, device, post_prob, validation_frequency=1, max_epoch=100, aleatoric=False):
+        super().__init__(dataloader, net, loss, optimizer, device, validation_frequency=validation_frequency, max_epoch=max_epoch, aleatoric=aleatoric)
 
         self.post_prob = post_prob
 
@@ -21,9 +22,13 @@ class BayesTrainer(abcTrainer):
             targets = [t.to(self.device) for t in targets]
 
             with torch.set_grad_enabled(True):
-                outputs = self.net(inputs)
                 prob_list = self.post_prob(points, st_sizes)
-                loss = self.loss(prob_list, targets, outputs)
+                if self.aleatoric:
+                    outputs, logvar = self.net(inputs, aleatoric=self.aleatoric)
+                    loss = bayes_aleatoric_loss(self.loss, outputs, targets, logvar, prob_list)
+                else:
+                    outputs = self.net(inputs)
+                    loss = self.loss(prob_list, targets, outputs)
 
                 self.optimizer.zero_grad()
                 loss.backward()
@@ -36,7 +41,7 @@ class BayesTrainer(abcTrainer):
 
                 print(f'epoch: {self.epoch} | step: {step} | gd_count: {gd_count} | prediction: {pre_count} | loss: {loss}')
 
-        writer.add_scalar('train loss Bayes',
+        self.writer.add_scalar('train loss Bayes',
             epoch_loss,
             self.epoch)
 
@@ -51,7 +56,10 @@ class BayesTrainer(abcTrainer):
             # inputs are images with different sizes
             assert inputs.size(0) == 1 # 'the batch size should equal to 1 in validation mode'
             with torch.set_grad_enabled(False):
-                outputs = self.net(inputs)
+                if self.aleatoric:
+                    outputs, _ = self.net(inputs, aleatoric=self.aleatoric)
+                else:
+                    outputs = self.net(inputs)
                 res = count[0].item() - torch.sum(outputs).item()
                 epoch_res.append(res)
 
@@ -60,11 +68,10 @@ class BayesTrainer(abcTrainer):
         mse = np.sqrt(np.mean(np.square(epoch_res)))
         mae = np.mean(np.abs(epoch_res))
 
-        # ...log the running loss
-        writer.add_scalar('val MAE Bayes',
+        self.writer.add_scalar('val MAE Bayes',
                             mae,
                             self.epoch)
-        writer.add_scalar('val MSE Bayes',
+        self.writer.add_scalar('val MSE Bayes',
                         mse,
                         self.epoch)
 

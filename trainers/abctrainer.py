@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
+from torch.utils.tensorboard import SummaryWriter
 
 class abcTrainer(ABC):
 
-    def __init__(self, dataloader, net, loss, optimizer, device, validation_frequency=1, max_epoch=100):
+    def __init__(self, dataloader, net, loss, optimizer, device, validation_frequency=1, max_epoch=100, aleatoric=False):
         self.train_loader, self.val_loader, self.test_loader = dataloader()
         self.net = net
         self.loss = loss
@@ -13,6 +14,8 @@ class abcTrainer(ABC):
         self.validation_frequency = validation_frequency
         self.max_epoch = max_epoch
         self.device = device
+        self.aleatoric = aleatoric
+        self.writter = SummaryWriter()
 
 
     def train(self):
