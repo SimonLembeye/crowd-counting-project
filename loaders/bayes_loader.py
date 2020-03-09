@@ -1,8 +1,30 @@
 import os
+import random
 from glob import glob
+import numpy as np
+from PIL import Image
+import torch
 from torchvision import transforms
+import torchvision.transforms.functional as F2
 from torch.utils.data.dataloader import default_collate
 from torch.utils.data import Dataset, DataLoader
+
+
+def random_cropBayes(im_h, im_w, crop_h, crop_w):
+    res_h = im_h - crop_h
+    res_w = im_w - crop_w
+    i = random.randint(0, res_h)
+    j = random.randint(0, res_w)
+    return i, j, crop_h, crop_w
+
+
+def cal_innner_area(c_left, c_up, c_right, c_down, bbox):
+    inner_left = np.maximum(c_left, bbox[:, 0])
+    inner_up = np.maximum(c_up, bbox[:, 1])
+    inner_right = np.minimum(c_right, bbox[:, 2])
+    inner_down = np.minimum(c_down, bbox[:, 3])
+    inner_area = np.maximum(inner_right-inner_left, 0.0) * np.maximum(inner_down-inner_up, 0.0)
+    return inner_area
 
 class BayesDataset(Dataset):
     def __init__(self, root_path, crop_size,

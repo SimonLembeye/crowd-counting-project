@@ -1,3 +1,8 @@
+import numpy as np
+import torch
+import random
+from PIL import Image
+
 class Compose(object):
     def __init__(self, transforms):
         self.transforms = transforms

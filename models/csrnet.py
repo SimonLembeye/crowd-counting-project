@@ -1,5 +1,6 @@
 import torch.nn as nn
 from torchvision import models
+import torch.nn.functional as F
 
 from utils.models import make_layers
 
