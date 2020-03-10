@@ -54,3 +54,5 @@ For each training session the weights of the best models (minimizing 2 * val_mse
 ### Tensorboard
 In order the visualize metrics and results in tensorboard you need to launch it separately: `tensorboard --logdir=runs`. You can then access tensorboard in our browser at [localhost:6006](localhost:6006)
 If you have performed multiple experiments, tensorboard will aggregate them in the same dashboard.
+
+Project made by Thomas Le Monnier de Gouville, Simon Lembeye, Robin Michard and Victor Rambaud.
