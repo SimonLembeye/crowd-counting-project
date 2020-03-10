@@ -40,11 +40,11 @@ The project is structured as following:
 ## Launching
 
 Train exemple :
-`python train.py --method bayes --model csrnet --aletoric true --lr 1e-6`
+`python train.py --method bayes --model csrnet --aleatoric true --lr 1e-6`
 Details can be found in train.py
 
 Test exemple :
-`python test.py --method bayes --model csrnet --aletoric true --lr 1e-6`
+`python test.py --method bayes --model csrnet --aleatoric true --lr 1e-6`
 Details can be found in test.py
 
 ## Output
