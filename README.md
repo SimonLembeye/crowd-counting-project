@@ -40,11 +40,11 @@ The project is structured as following:
 ## Launching
 
 Train exemple :
-`python commander.py --dataset gtsrb --name gtsrb_lenet_optsgd_lr1e-3_lrdecayPlateau0.5_bsz128 --batch-size 128 --optimizer sgd --scheduler ReduceLROnPlateau --lr 1e-3 --lr-decay 0.5 --step 15 --epochs 100 --arch lenet --model-name lenet5 --root-dir /data/ --num-classes 43 --workers 4 --crop-size 32 --criterion crossentropy --tensorboard`
+`python train.py --method bayes --model csrnet --aletoric true --lr 1e-6`
 Details can be found in train.py
 
 Test exemple :
-`python commander.py --dataset gtsrb --name gtsrb_lenet_optsgd_lr1e-3_lrdecayPlateau0.5_bsz128 --batch-size 128 --optimizer sgd --scheduler ReduceLROnPlateau --lr 1e-3 --lr-decay 0.5 --step 15 --epochs 100 --arch lenet --model-name lenet5 --root-dir /data/ --num-classes 43 --workers 4 --crop-size 32 --criterion crossentropy --tensorboard`
+`python test.py --method bayes --model csrnet --aletoric true --lr 1e-6`
 Details can be found in test.py
 
 ## Output
