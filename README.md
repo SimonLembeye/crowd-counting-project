@@ -7,7 +7,7 @@ The aim of this project is to test different methods of crowd couting. We will f
 ## Data
 
 These different methods have been tested on the ShanghaïTech Part A dataset.
-We provide the well formatted data for this project [here](https://drive.google.com/file/d/1Scax0_ZrvWBcEaSHs0kghOOl87sbN3GZ/view?usp=sharing).
+We provide the well formatted data for this project [here](https://drive.google.com/file/d/1Scax0_ZrvWBcEaSHs0kghOOl87sbN3GZ/view?usp=sharing). data folder has to be place in the root's project.
 
 ## Project structure
 
