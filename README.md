@@ -44,7 +44,7 @@ Train exemple :
 Details can be found in train.py
 
 Test exemple :
-`python test.py --method bayes --model csrnet --aleatoric true --lr 1e-6`
+`python test.py --method bayes --model csrnet`
 Details can be found in test.py
 
 ## Output

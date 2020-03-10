@@ -1,10 +1,19 @@
+from torch.autograd import Variable
 import argparse
 import numpy as np
+import torch
+import os
 
 from loaders import loading_data_GT, loading_data_Bayes
 from models import CSRNet, vgg19_extended
 
-def test_gt(gt_net, aleatoric=False):
+save_dir = 'best_model_weight'
+LOG_PARA = 100.
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print('Using gpu: %s ' % torch.cuda.is_available())
+
+def test_gt(gt_net):
     _, _, test_dataloader = loading_data_GT()
 
     gt_net.load_state_dict(torch.load(os.path.join(save_dir, 'best_model_gt.pth'), device))
@@ -34,7 +43,7 @@ def test_gt(gt_net, aleatoric=False):
     log_str = 'Final Test: mae {}, mse {}'.format(mae, mse)
     print(log_str)
 
-def test_bayes(bayes_net, aleatoric=False):
+def test_bayes(bayes_net):
     _, _, test_dataloader = loading_data_Bayes()
 
     bayes_net.load_state_dict(torch.load(os.path.join(save_dir, 'best_model_bayes.pth'), device))
@@ -55,10 +64,6 @@ def test_bayes(bayes_net, aleatoric=False):
     log_str = 'Final Test: mae {}, mse {}'.format(mae, mse)
     print(log_str)
 
-
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-print('Using gpu: %s ' % torch.cuda.is_available())
-
 args = None
 
 def parse_args():
@@ -67,8 +72,6 @@ def parse_args():
                         help='Method - ground_truth or bayes')
     parser.add_argument('--model', default='csrnet',
                         help='NN Model - csrnet or vgg19_extended')
-    parser.add_argument('--aleatoric', type=str2bool, default='false',
-                        help='Boolean - use aleatoric loss')
     args = parser.parse_args()
     return args
 
@@ -76,7 +79,7 @@ if __name__ == '__main__':
     args = parse_args()
     if args.method == "ground_truth":
         gt_net = CSRNet().to(device)
-        test_gt(gt_net, aleatoric=args.aleatoric)
+        test_gt(gt_net)
 
     elif args.method == "bayes":
 
@@ -87,7 +90,7 @@ if __name__ == '__main__':
         else:
             print('model should be csrnet or vgg19_extended')
 
-        test_bayes(bayes_net, aleatoric=args.aleatoric)
+        test_bayes(bayes_net)
 
     else:
         print("model should be ground_truth or bayes")

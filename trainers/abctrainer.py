@@ -15,7 +15,7 @@ class abcTrainer(ABC):
         self.max_epoch = max_epoch
         self.device = device
         self.aleatoric = aleatoric
-        self.writter = SummaryWriter()
+        self.writer = SummaryWriter()
         self.save_dir = "best_model_weight"
 
 
