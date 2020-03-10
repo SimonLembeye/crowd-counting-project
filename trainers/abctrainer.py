@@ -16,6 +16,7 @@ class abcTrainer(ABC):
         self.device = device
         self.aleatoric = aleatoric
         self.writter = SummaryWriter()
+        self.save_dir = "best_model_weight"
 
 
     def train(self):

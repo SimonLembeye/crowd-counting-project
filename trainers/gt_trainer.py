@@ -87,4 +87,4 @@ class GTTrainer(abcTrainer):
             print("save best mse {:.2f} mae {:.2f} model epoch {}".format(self.best_mse,
                                                                             self.best_mae,
                                                                                  self.epoch))
-            torch.save(self.net.state_dict(), os.path.join(save_dir, 'best_model_gt.pth'))
+            torch.save(self.net.state_dict(), os.path.join(self.save_dir, 'best_model_gt.pth'))
