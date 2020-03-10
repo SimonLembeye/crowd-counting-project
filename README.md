@@ -1,8 +1,8 @@
 # Crowd Counting Project
 The aim of this project is to test different methods of crowd couting. We will find an implementation of the neural network and losses developed by the articles:
-    - [1] CSRNet: Dilated Convolutional Neural Networks for Understanding the Highly Congested Scenes, CVPR 2018. [link](https://arxiv.org/abs/1802.10062 )
-    - [2] Bayesian Loss for Crowd Count Estimation with Point Supervision. [link](https://arxiv.org/abs/1908.03684)
-    - [3] What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision? [link](https://arxiv.org/abs/1703.04977 )
+    * - [1] CSRNet: Dilated Convolutional Neural Networks for Understanding the Highly Congested Scenes, CVPR 2018. [link](https://arxiv.org/abs/1802.10062 )
+    * - [2] Bayesian Loss for Crowd Count Estimation with Point Supervision. [link](https://arxiv.org/abs/1908.03684)
+    * - [3] What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision? [link](https://arxiv.org/abs/1703.04977 )
 
 ## Data
 
